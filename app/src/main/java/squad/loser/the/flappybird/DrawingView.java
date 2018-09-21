@@ -5,11 +5,16 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
-public class DrawingView extends View implements Runnable {
+public class DrawingView extends View implements Runnable{
 
     Bird bird;
+    GestureDetector gestureDetector;
 
     public DrawingView(Context context) {
         super(context);
@@ -21,8 +26,23 @@ public class DrawingView extends View implements Runnable {
         initialize(context);
     }
 
-    void initialize(Context ctx) {
-        bird = new Bird(100, 100, Constants.VELOCITY_HORIZONTAL);
+    void initialize(final Context ctx) {
+        bird = new Bird(100, 100, 0);
+
+        this.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    bird.jump();
+                }
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
     }
 
     @Override
