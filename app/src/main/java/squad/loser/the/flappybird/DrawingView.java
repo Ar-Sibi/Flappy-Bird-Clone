@@ -7,9 +7,10 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class DrawingView extends View{
+public class DrawingView extends View implements Runnable{
 
     Paint circlePaint=new Paint();
+    float posx=0;
 
     public DrawingView(Context context) {
         super(context);
@@ -28,7 +29,25 @@ public class DrawingView extends View{
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawCircle(100f,100f,100f,circlePaint);
+        canvas.drawCircle(posx,100f,100f,circlePaint);
+        posx++;
         super.onDraw(canvas);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    public void run(){
+        while(!Thread.interrupted()){
+            try{
+                Thread.sleep(1000/60);
+            }catch (InterruptedException e){
+                break;
+            }
+            invalidate();
+        }
     }
 }
