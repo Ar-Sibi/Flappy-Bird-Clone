@@ -13,24 +13,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         drawingView = new DrawingView(this);
-        runner=new Thread(drawingView);
+        runner = new Thread(drawingView);
         runner.start();
-        
+
         setContentView(drawingView);
     }
 
     @Override
     protected void onStart() {
-        if(drawingView!=null&&runner==null){
-           runner = new Thread(drawingView);
-           runner.start();
+        if (drawingView != null && runner == null) {
+            runner = new Thread(drawingView);
+            runner.start();
         }
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        if(drawingView!=null&&runner==null){
+        if (drawingView != null && runner == null) {
             runner = new Thread(drawingView);
             runner.start();
         }
@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        if(runner!=null&&!runner.isInterrupted()){
+        if (runner != null && !runner.isInterrupted()) {
             runner.interrupt();
-            runner=null;
+            runner = null;
         }
         super.onStop();
     }
@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(runner!=null&&!runner.isInterrupted()){
+        if (runner != null && !runner.isInterrupted()) {
             runner.interrupt();
-            runner=null;
+            runner = null;
         }
     }
 }

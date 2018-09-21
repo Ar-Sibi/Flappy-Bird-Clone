@@ -7,10 +7,9 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class DrawingView extends View implements Runnable{
+public class DrawingView extends View implements Runnable {
 
-    Paint circlePaint=new Paint();
-    float posx=0;
+    Bird bird;
 
     public DrawingView(Context context) {
         super(context);
@@ -22,15 +21,14 @@ public class DrawingView extends View implements Runnable{
         initialize(context);
     }
 
-    void initialize(Context ctx){
-        circlePaint.setStyle(Paint.Style.STROKE);
-        circlePaint.setStrokeWidth(3f);
+    void initialize(Context ctx) {
+        bird = new Bird(100, 100, Constants.VELOCITY_HORIZONTAL);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawCircle(posx,100f,100f,circlePaint);
-        posx++;
+        bird.draw(canvas, 1);
+        bird.move();
         super.onDraw(canvas);
     }
 
@@ -40,11 +38,11 @@ public class DrawingView extends View implements Runnable{
     }
 
     @Override
-    public void run(){
-        while(!Thread.interrupted()){
-            try{
-                Thread.sleep(1000/60);
-            }catch (InterruptedException e){
+    public void run() {
+        while (!Thread.interrupted()) {
+            try {
+                Thread.sleep(1000 / 60);
+            } catch (InterruptedException e) {
                 break;
             }
             invalidate();
