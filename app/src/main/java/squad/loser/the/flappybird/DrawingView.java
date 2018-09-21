@@ -11,11 +11,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-public class DrawingView extends View implements Runnable{
+public class DrawingView extends View implements Runnable {
 
     Bird bird;
     Pipes pipes;
-    GestureDetector gestureDetector;
+    boolean isDying = true;
 
     public DrawingView(Context context) {
         super(context);
@@ -28,12 +28,13 @@ public class DrawingView extends View implements Runnable{
     }
 
     void initialize(final Context ctx) {
+        this.setLayerType(LAYER_TYPE_HARDWARE, null);
         bird = new Bird(100, 100, 0);
         pipes = new Pipes();
         this.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_UP){
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     bird.jump();
                 }
                 return true;
@@ -48,10 +49,14 @@ public class DrawingView extends View implements Runnable{
 
     @Override
     protected void onDraw(Canvas canvas) {
-        pipes.draw(canvas,1);
+        pipes.draw(canvas, 1);
         bird.draw(canvas, 1);
         pipes.move();
         bird.move();
+        isDying = pipes.intersects(bird);
+        if (isDying) {
+            canvas.drawRect(0, 0, 100, 100, new Paint());
+        }
         super.onDraw(canvas);
     }
 
@@ -64,7 +69,7 @@ public class DrawingView extends View implements Runnable{
     public void run() {
         while (!Thread.interrupted()) {
             try {
-                Thread.sleep(1000 / 60);
+                Thread.sleep(1000 / 90);
             } catch (InterruptedException e) {
                 break;
             }

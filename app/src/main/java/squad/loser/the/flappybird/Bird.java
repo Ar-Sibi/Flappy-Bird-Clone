@@ -7,12 +7,22 @@ import android.graphics.PointF;
 public class Bird {
     private PointF velocity;
     private PointF position;
-    Paint paint = new Paint();
+    private final float radius = 60f;
+
+    private Paint paint = new Paint();
 
     public Bird() {
         velocity = new PointF();
         position = new PointF();
         paint.setStyle(Paint.Style.STROKE);
+    }
+
+    public PointF getPosition() {
+        return new PointF(position.x, position.y);
+    }
+
+    public float getRadius() {
+        return radius;
     }
 
     Bird(float posX, float posY, float velX) {
@@ -37,6 +47,6 @@ public class Bird {
     }
 
     void draw(Canvas canvas, float density) {
-        canvas.drawCircle(position.x, position.y, 60f * density, paint);
+        canvas.drawCircle(position.x * density, position.y * density, radius * density, paint);
     }
 }
