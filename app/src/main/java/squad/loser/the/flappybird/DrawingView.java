@@ -14,6 +14,7 @@ import android.widget.Toast;
 public class DrawingView extends View implements Runnable{
 
     Bird bird;
+    Pipes pipes;
     GestureDetector gestureDetector;
 
     public DrawingView(Context context) {
@@ -28,7 +29,7 @@ public class DrawingView extends View implements Runnable{
 
     void initialize(final Context ctx) {
         bird = new Bird(100, 100, 0);
-
+        pipes = new Pipes();
         this.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -47,7 +48,9 @@ public class DrawingView extends View implements Runnable{
 
     @Override
     protected void onDraw(Canvas canvas) {
+        pipes.draw(canvas,1);
         bird.draw(canvas, 1);
+        pipes.move();
         bird.move();
         super.onDraw(canvas);
     }
