@@ -5,8 +5,12 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
+    DrawingView dv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dv = new DrawingView(this);
+        setContentView(dv);
     }
 }
