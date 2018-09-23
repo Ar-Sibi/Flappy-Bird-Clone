@@ -16,6 +16,8 @@ public class HomeActivity extends AppCompatActivity {
 
     public void startGame(View v){
         Intent i = new Intent(this,MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(i);
+        finish();
     }
 }

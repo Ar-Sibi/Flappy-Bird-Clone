@@ -1,7 +1,10 @@
 package squad.loser.the.flappybird;
 
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.DisplayMetrics;
 
@@ -14,15 +17,20 @@ public class Pipes {
     float screenHeight;
     private List<Pipe> pipes = new ArrayList();
 
-    Pipes() {
+
+    Pipes(Context c) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable=true;
+        Bitmap wall = BitmapFactory.decodeResource(c.getResources(),R.drawable.brick_wall_tiled_perfect,options);
         DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
         float screenWidth = displayMetrics.widthPixels;
         float density = displayMetrics.density;
         screenHeight = displayMetrics.heightPixels / density;
+        wall=Bitmap.createScaledBitmap(wall,(int)(Constants.PIPE_WIDTH*density),(int)(Constants.PIPE_WIDTH*density)+1, false);
         int numpipes = (int) Math.floor((screenWidth / ((Constants.PIPE_GAP + Constants.PIPE_WIDTH) * density)) + 1);
         float startX = screenWidth / density;
         for (int i = 0; i < numpipes; i++) {
-            pipes.add(new Pipe(startX + i * (Constants.PIPE_WIDTH + Constants.PIPE_GAP), random.nextInt((int) (screenHeight - (Constants.PIPE_PASS_GAP + 200))) + 100f, screenHeight));
+            pipes.add(new Pipe(startX + i * (Constants.PIPE_WIDTH + Constants.PIPE_GAP), random.nextInt((int) (screenHeight - (Constants.PIPE_PASS_GAP + 200))) + 100f, screenHeight,wall));
         }
     }
 

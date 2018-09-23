@@ -1,6 +1,7 @@
 package squad.loser.the.flappybird;
 
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
@@ -11,15 +12,16 @@ public class Pipe {
     float gapTop;
     RectF top;
     RectF bottom;
-
+    Bitmap wall;
     Paint paint = new Paint();
 
-    Pipe(float x, float y, float screenBottom) {
-        paint.setStyle(Paint.Style.STROKE);
+    Pipe(float x, float y, float screenBottom, Bitmap wall) {
+        //paint.setStyle(Paint.Style.STROKE);
         left = x;
         gapTop = y;
         top = new RectF(x, 0, x + Constants.PIPE_WIDTH, y);
         bottom = new RectF(x, y + Constants.PIPE_PASS_GAP, x + Constants.PIPE_WIDTH, screenBottom);
+        this.wall=wall;
     }
 
     boolean intersects(Bird b) {
@@ -82,7 +84,9 @@ public class Pipe {
     }
 
     public void draw(Canvas c, float density) {
-        c.drawRect(top.left * density, top.top * density, top.right * density, top.bottom * density, paint);
-        c.drawRect(bottom.left * density, bottom.top * density, bottom.right * density, bottom.bottom * density, paint);
+        for(int i=1;top.bottom-Constants.PIPE_WIDTH*(i-1)>0;i++)
+            c.drawBitmap(wall,top.left*density,top.bottom*density-i*Constants.PIPE_WIDTH*density,new Paint());
+        for(int i=0;bottom.top+Constants.PIPE_WIDTH*(i-1)<bottom.bottom;i++)
+            c.drawBitmap(wall,bottom.left*density,bottom.top*density+i*Constants.PIPE_WIDTH*density,new Paint());
     }
 }

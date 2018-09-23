@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -37,7 +38,7 @@ public class DrawingView extends View implements Runnable {
         c=ctx;
         this.setLayerType(LAYER_TYPE_HARDWARE, null);
         bird = new Bird(ctx,100, 100, 0);
-        pipes = new Pipes();
+        pipes = new Pipes(ctx);
         this.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -63,6 +64,7 @@ public class DrawingView extends View implements Runnable {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        canvas.drawColor(Color.parseColor("#00ffff"));
         pipes.draw(canvas, density);
         bird.draw(canvas, density);
         if (!isDead)
