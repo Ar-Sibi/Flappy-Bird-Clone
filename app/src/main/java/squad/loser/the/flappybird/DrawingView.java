@@ -36,7 +36,7 @@ public class DrawingView extends View implements Runnable {
     void initialize(final Context ctx) {
         c=ctx;
         this.setLayerType(LAYER_TYPE_HARDWARE, null);
-        bird = new Bird(100, 100, 0);
+        bird = new Bird(ctx,100, 100, 0);
         pipes = new Pipes();
         this.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -48,7 +48,7 @@ public class DrawingView extends View implements Runnable {
             }
         });
         screenHeight=ctx.getResources().getDisplayMetrics().heightPixels;
-        density=1;//ctx.getResources().getDisplayMetrics().density;
+        density=ctx.getResources().getDisplayMetrics().density;
 
         score=0;
 
@@ -63,8 +63,8 @@ public class DrawingView extends View implements Runnable {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        pipes.draw(canvas, 1);
-        bird.draw(canvas, 1);
+        pipes.draw(canvas, density);
+        bird.draw(canvas, density);
         if (!isDead)
             pipes.move();
         bird.move();

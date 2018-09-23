@@ -17,7 +17,7 @@ public class Pipes {
     Pipes() {
         DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
         float screenWidth = displayMetrics.widthPixels;
-        float density = 1;//displayMetrics.density;
+        float density = displayMetrics.density;
         screenHeight = displayMetrics.heightPixels / density;
         int numpipes = (int) Math.floor((screenWidth / ((Constants.PIPE_GAP + Constants.PIPE_WIDTH) * density)) + 1);
         float startX = screenWidth / density;
