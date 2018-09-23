@@ -1,6 +1,8 @@
 package squad.loser.the.flappybird;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -75,8 +77,9 @@ public class DrawingView extends View implements Runnable {
         }
         if (isGameOver(bird) && !isGameOver) {
             Intent i = new Intent(c,GameOverActivity.class);
-            i.putExtra("score",score);
+            i.putExtra("score",(int)score);
             c.startActivity(i);
+            getActivity(c).finish();
             isGameOver=true;
         }
         canvas.drawText(""+(int)score,0,100,textPainter);
@@ -104,6 +107,16 @@ public class DrawingView extends View implements Runnable {
             return true;
         }
         return false;
+    }
+
+    private Activity getActivity(Context context) {
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity)context;
+            }
+            context = ((ContextWrapper)context).getBaseContext();
+        }
+        return null;
     }
 
     @Override
