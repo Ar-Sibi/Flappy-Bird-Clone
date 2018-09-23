@@ -3,7 +3,6 @@ package squad.loser.the.flappybird;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.PointF;
 import android.util.DisplayMetrics;
 
 import java.util.ArrayList;
@@ -11,9 +10,9 @@ import java.util.List;
 import java.util.Random;
 
 public class Pipes {
-    private List<Pipe> pipes = new ArrayList();
     Random random = new Random();
     float screenHeight;
+    private List<Pipe> pipes = new ArrayList();
 
     Pipes() {
         DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();

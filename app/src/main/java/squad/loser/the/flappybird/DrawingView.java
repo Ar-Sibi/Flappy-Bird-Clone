@@ -1,21 +1,25 @@
 package squad.loser.the.flappybird;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 public class DrawingView extends View implements Runnable {
 
     Bird bird;
     Pipes pipes;
-    boolean isDying = true;
+    float screenHeight;
+    float density;
+    Context c;
+    boolean isDead = false;
+    boolean isGameOver = false;
+    float score;
+    Paint textPainter;
 
     public DrawingView(Context context) {
         super(context);
@@ -28,18 +32,26 @@ public class DrawingView extends View implements Runnable {
     }
 
     void initialize(final Context ctx) {
+        c=ctx;
         this.setLayerType(LAYER_TYPE_HARDWARE, null);
         bird = new Bird(100, 100, 0);
         pipes = new Pipes();
         this.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getAction() == MotionEvent.ACTION_UP && !isDead) {
                     bird.jump();
                 }
                 return true;
             }
         });
+        screenHeight=ctx.getResources().getDisplayMetrics().heightPixels;
+        density=1;//ctx.getResources().getDisplayMetrics().density;
+
+        score=0;
+
+        textPainter = new Paint();
+        textPainter.setTextSize(100);
     }
 
     @Override
@@ -51,13 +63,47 @@ public class DrawingView extends View implements Runnable {
     protected void onDraw(Canvas canvas) {
         pipes.draw(canvas, 1);
         bird.draw(canvas, 1);
-        pipes.move();
+        if (!isDead)
+            pipes.move();
         bird.move();
-        isDying = pipes.intersects(bird);
-        if (isDying) {
-            canvas.drawRect(0, 0, 100, 100, new Paint());
+
+        if (!isDead) {
+            score+=(Constants.VELOCITY_HORIZONTAL/(Constants.PIPE_WIDTH+Constants.PIPE_GAP));
+            isDead = pipes.intersects(bird) || outOfBounds(bird);
+            if (isDead)
+                bird.die();
         }
+        if (isGameOver(bird) && !isGameOver) {
+            Intent i = new Intent(c,GameOverActivity.class);
+            i.putExtra("score",score);
+            c.startActivity(i);
+            isGameOver=true;
+        }
+        canvas.drawText(""+(int)score,0,100,textPainter);
         super.onDraw(canvas);
+    }
+
+    boolean isGameOver(Bird b){
+        if(!isDead)
+            return false;
+        float radius = b.getRadius();
+        float pos = b.getPosition().y;
+        if(pos>screenHeight/density) {
+            return true;
+        }
+        return false;
+    }
+
+    boolean outOfBounds(Bird b){
+        float radius = b.getRadius();
+        float pos = b.getPosition().y;
+        if(pos-radius<0) {
+            return true;
+        }
+        if(pos+radius>screenHeight){
+            return true;
+        }
+        return false;
     }
 
     @Override
