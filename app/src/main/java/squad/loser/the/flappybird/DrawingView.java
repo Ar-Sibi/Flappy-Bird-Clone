@@ -24,6 +24,7 @@ public class DrawingView extends View implements Runnable {
     float score;
     Paint textPainter;
 
+
     public DrawingView(Context context) {
         super(context);
         initialize(context);
@@ -72,7 +73,7 @@ public class DrawingView extends View implements Runnable {
         bird.move();
 
         if (!isDead) {
-            score+=(Constants.VELOCITY_HORIZONTAL/(Constants.PIPE_WIDTH+Constants.PIPE_GAP));
+            score+=(2*(Constants.VELOCITY_HORIZONTAL)/(Constants.PIPE_WIDTH+Constants.PIPE_GAP));
             isDead = pipes.intersects(bird) || outOfBounds(bird);
             if (isDead)
                 bird.die();

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "75289601873",
+    "firebase_url": "https://flappy-bird-f1256.firebaseio.com",
+    "project_id": "flappy-bird-f1256",
+    "storage_bucket": "flappy-bird-f1256.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:75289601873:android:b2122e67e196cd94",
+        "android_client_info": {
+          "package_name": "squad.loser.the.flappybird"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "75289601873-cado97nhkpd3u7m7jsp00n50gd2nsbvm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXzsjUGyyKL-53epmwMsq5B6XeB9uefeE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

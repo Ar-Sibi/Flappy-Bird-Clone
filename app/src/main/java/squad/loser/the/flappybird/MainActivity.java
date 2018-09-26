@@ -2,6 +2,10 @@ package squad.loser.the.flappybird;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
+import android.view.WindowManager;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -11,6 +15,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
+
 
         drawingView = new DrawingView(this);
         runner = new Thread(drawingView);
@@ -54,4 +65,11 @@ public class MainActivity extends AppCompatActivity {
             runner = null;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        FirebaseAuth.getInstance().signOut();
+        finish();
+    }
 }
+

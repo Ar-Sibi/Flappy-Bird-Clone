@@ -2,30 +2,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
+    <Button
+        android:id="@+id/retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/mybutton"
+        android:layout_marginBottom="70dp"
+        android:text="RETRY" />
+
     <TextView
         android:id="@+id/score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerInParent="true"
+        android:textSize="28sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="94dp"
+        android:layout_marginTop="50dp"
         android:text="Well Played !!"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:id="@+id/textView3" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView3"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp"
-        android:text="Your Score is"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 </RelativeLayout>
