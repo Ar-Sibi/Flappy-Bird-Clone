@@ -10,4 +10,6 @@ public class Constants {
     public static final float PIPE_WIDTH = 50f;
     public static final float PIPE_GAP = 180f;
     public static final float PIPE_PASS_GAP = 133f;
+
+    public static final String shared_string="happyflappy";
 }

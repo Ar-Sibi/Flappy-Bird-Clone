@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:padding="5dp"
     android:orientation="vertical"
-    tools:context=".ScoreBoardActivity">
+    tools:context=".ScoreBoardActivity"
+    android:background="@drawable/bg_b">
 
     <LinearLayout
         android:layout_width="match_parent"

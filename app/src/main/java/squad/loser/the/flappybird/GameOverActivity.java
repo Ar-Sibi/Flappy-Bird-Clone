@@ -21,8 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
 
 public class GameOverActivity extends AppCompatActivity {
     TextView score;
@@ -46,7 +44,7 @@ public class GameOverActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.myButton) {
-            Intent myIntent = new Intent(this , ScoreBoardActivity.class);
+            Intent myIntent = new Intent(this, ScoreBoardActivity.class);
             startActivity(myIntent);
         }
         return super.onOptionsItemSelected(item);
@@ -57,20 +55,21 @@ public class GameOverActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activiy_game_over);
-        uId = user.getUid();
-        fire_baseDb = FirebaseDatabase.getInstance().getReference("scoreboard").child(uId);
         score = findViewById(R.id.score);
         retry = findViewById(R.id.retry);
-
-        String _nameOf_user = user.getEmail();
-        Log.d("user name", _nameOf_user);
         score_of_the_user = getIntent().getIntExtra("score", 0);
         score.setText("Your Score : " + score_of_the_user);
+        if (!getSharedPreferences(Constants.shared_string, MODE_PRIVATE).getBoolean("anonymous", false)) {
+            uId = user.getUid();
+            fire_baseDb = FirebaseDatabase.getInstance().getReference("scoreboard").child(uId);
 
-        fire_baseDb.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int test = 0;
+            String _nameOf_user = user.getEmail();
+            Log.d("user name", _nameOf_user);
+
+            fire_baseDb.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    int test = 0;
 
 
                     if (dataSnapshot.exists()) {
@@ -78,28 +77,27 @@ public class GameOverActivity extends AppCompatActivity {
                         Log.d("test value", String.valueOf(test));
                         checkHighScore = test;
                         //Log.e("previous score", String.valueOf(checkHighScore));
-                }
-                else{
-                        Log.d("empty dataSnapshot" , "null");
+                    } else {
+                        Log.d("empty dataSnapshot", "null");
                     }
-                if (score_of_the_user > checkHighScore && (score_of_the_user != checkHighScore)) {
-                    fire_baseDb.setValue(new HighScore(score_of_the_user, user.getEmail()));
-                    Toast.makeText(getApplicationContext(), "Stored", Toast.LENGTH_LONG).show();
+                    if (score_of_the_user > checkHighScore && (score_of_the_user != checkHighScore)) {
+                        fire_baseDb.setValue(new HighScore(score_of_the_user, user.getEmail()));
+                        Toast.makeText(getApplicationContext(), "Stored", Toast.LENGTH_LONG).show();
+                    }
+
+
                 }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+                }
+            });
+        }
 
 
-       // Log.e("score_of the user", String.valueOf(score_of_the_user));
-       // Log.e("previous score", String.valueOf(checkHighScore));
-
+        // Log.e("score_of the user", String.valueOf(score_of_the_user));
+        // Log.e("previous score", String.valueOf(checkHighScore));
 
 
         final Intent intent = new Intent(this, MainActivity.class);
@@ -114,7 +112,8 @@ public class GameOverActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(this, HomeActivity.class);
+        Intent i = new Intent(this, MainMenuActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         finish();
         super.onBackPressed();

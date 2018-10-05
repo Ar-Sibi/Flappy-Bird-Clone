@@ -17,6 +17,7 @@ import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +31,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class HomeActivity extends AppCompatActivity {
-    public TextView newAccount;
     public TextInputEditText usernameText;
     public TextInputEditText passwordText;
     public TextInputLayout username_layout;
@@ -40,41 +40,35 @@ public class HomeActivity extends AppCompatActivity {
     public String signIn_password = null;
     public Boolean check_internet = false;
     public ProgressBar myProgress;
-
+    public CheckBox checkBox;
 
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         check_internet = isNetworkAvaliable(this);
-        newAccount = findViewById(R.id.newAccount);
         usernameText = findViewById(R.id.username);
         myAuth = FirebaseAuth.getInstance();
+        checkBox = findViewById(R.id.checkBox);
         myProgress = findViewById(R.id.progressBar2);
         myProgress.setVisibility(View.GONE);
         passwordText = findViewById(R.id.password);
         username_layout = findViewById(R.id.username_layout);
         password_layout = findViewById(R.id.password_layout);
 
-
-        final Intent sign_upIntent = new Intent(this, SignUp.class);
-        newAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                newAccount.setPaintFlags(newAccount.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                startActivity(sign_upIntent);
-
-
-            }
-        });
     }
 
     public void startGame(View v) {
-
+        final Intent i = new Intent(this, MainMenuActivity.class);
+        if(checkBox.isChecked()){
+            getSharedPreferences(Constants.shared_string,MODE_PRIVATE).edit().putBoolean("anonymous",true).apply();
+            startActivity(i);
+            return;
+        }
+        getSharedPreferences(Constants.shared_string,MODE_PRIVATE).edit().putBoolean("anonymous",false).apply();
         signIn_username = usernameText.getText().toString().trim();
         signIn_password = passwordText.getText().toString().trim();
-        final Intent i = new Intent(this, MainActivity.class);
+        getSharedPreferences(Constants.shared_string,MODE_PRIVATE).edit().putBoolean("anonymous",true).apply();
         username_layout.setError("");
         password_layout.setError("");
         if (!check_internet) {
@@ -98,32 +92,30 @@ public class HomeActivity extends AppCompatActivity {
 
             } else {
                 myProgress.setVisibility(View.VISIBLE);
-                myAuth.signInWithEmailAndPassword(signIn_username, signIn_password)
-                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d("success", "signInWithEmail:success");
-                                    Toast.makeText(HomeActivity.this, "Login successful",
-                                            Toast.LENGTH_LONG).show();
-                                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                    startActivity(i);
-                                    finish();
-                                    myProgress.setVisibility(View.GONE);
+                myAuth.createUserWithEmailAndPassword(signIn_username, signIn_password).addOnCompleteListener(HomeActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            getSharedPreferences(Constants.shared_string,MODE_PRIVATE).edit().putString("username",signIn_username).apply();
+                            getSharedPreferences(Constants.shared_string,MODE_PRIVATE).edit().putString("password",signIn_password).apply();
+                            Log.d("Success message", "createUserWithEmail:success");
+                            Toast.makeText(HomeActivity.this, "Account has been created",
+                                    Toast.LENGTH_LONG).show();
+                            Intent i = new Intent(HomeActivity.this,MainMenuActivity.class);
+                            startActivity(i);
+                            finish();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("Failure message", task.getException().toString(), task.getException());
+                            Toast.makeText(HomeActivity.this, "Could not sign in please play anonymously or retry",
+                                    Toast.LENGTH_LONG).show();
+                            myProgress.setVisibility(View.GONE);
+                        }
+                    }
 
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Log.w("failure", "signInWithEmail:failure", task.getException());
-                                    Toast.makeText(HomeActivity.this, "Please try again!",
-                                            Toast.LENGTH_LONG).show();
-                                    myProgress.setVisibility(View.GONE);
 
-                                }
-
-                                // ...
-                            }
-                        });
+                });
             }
         }
 
@@ -132,7 +124,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        newAccount.setPaintFlags(newAccount.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
     }
 
     public static boolean isNetworkAvaliable(Context ctx) {

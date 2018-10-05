@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -23,7 +27,12 @@ public class DrawingView extends View implements Runnable {
     boolean isGameOver = false;
     float score;
     Paint textPainter;
+    Bitmap backgroundImage;
 
+    Rect sourceArea;
+    Rect backgroundArea;
+
+    Paint bitmapPainter;
 
     public DrawingView(Context context) {
         super(context);
@@ -49,13 +58,30 @@ public class DrawingView extends View implements Runnable {
                 return true;
             }
         });
-        screenHeight=ctx.getResources().getDisplayMetrics().heightPixels;
+        backgroundImage = BitmapFactory.decodeResource(ctx.getResources(),R.drawable.bg_b);
+        sourceArea = new Rect(0,0,backgroundImage.getWidth(),backgroundImage.getHeight());
+        float screenWidth = ctx.getResources().getDisplayMetrics().widthPixels;
+
+        DisplayMetrics metrics=new DisplayMetrics();
+        if(Build.VERSION.SDK_INT>17)
+            getActivity(ctx).getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        else
+            getActivity(ctx).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        screenHeight=metrics.heightPixels;
         density=ctx.getResources().getDisplayMetrics().density;
+
+        backgroundArea= new Rect(0,0,(int)screenWidth,(int)screenHeight);
 
         score=0;
 
+        bitmapPainter = new Paint();
+
         textPainter = new Paint();
         textPainter.setTextSize(100);
+    }
+
+    void drawBackground(Canvas c){
+        c.drawBitmap(backgroundImage,sourceArea,backgroundArea,bitmapPainter);
     }
 
     @Override
@@ -65,7 +91,7 @@ public class DrawingView extends View implements Runnable {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawColor(Color.parseColor("#00ffff"));
+        drawBackground(canvas);
         pipes.draw(canvas, density);
         bird.draw(canvas, density);
         if (!isDead)
@@ -135,7 +161,13 @@ public class DrawingView extends View implements Runnable {
             } catch (InterruptedException e) {
                 break;
             }
-            invalidate();
+
+            getActivity(c).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    invalidate();
+                }
+            });
         }
     }
 }
